@@ -28,8 +28,9 @@ namespace CRUDwithSQL.Controllers
         // GET: Book/AddOrEdit/
         public IActionResult AddOrEdit(int? id)
         {
+            BookViewModel bookViewModel = new BookViewModel();
          
-            return View();
+            return View(bookViewModel);
         }
 
       
