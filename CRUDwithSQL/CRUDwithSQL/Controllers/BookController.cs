@@ -41,6 +41,11 @@ namespace CRUDwithSQL.Controllers
         public IActionResult AddOrEdit(int? id)
         {
             BookViewModel bookViewModel = new BookViewModel();
+
+            if (id>0)
+            {
+                bookViewModel = FetchBookById(id);
+            }
          
             return View(bookViewModel);
         }
@@ -86,6 +91,30 @@ namespace CRUDwithSQL.Controllers
         public IActionResult DeleteConfirmed(int id)
         {    
             return RedirectToAction(nameof(Index));
+        }
+
+        [NonAction]
+        public BookViewModel FetchBookById(int? id)
+        {
+          BookViewModel bookViewModel = new BookViewModel();
+
+           using (SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DevConnection")))
+            {
+                DataTable dataTable = new DataTable();
+                sqlConnection.Open();
+                SqlDataAdapter sqlData = new SqlDataAdapter("BookViewByID", sqlConnection);
+                sqlData.SelectCommand.CommandType = CommandType.StoredProcedure;
+                sqlData.SelectCommand.Parameters.AddWithValue("BookID", id);
+                sqlData.Fill(dataTable);
+                if (dataTable.Rows.Count==1)
+                {
+                    bookViewModel.BookID = Convert.ToInt32(dataTable.Rows[0]["BookID"].ToString());
+                    bookViewModel.Title = dataTable.Rows[0]["Title"].ToString();
+                    bookViewModel.Author = dataTable.Rows[0]["Author"].ToString();
+                    bookViewModel.Price = Convert.ToInt32(dataTable.Rows[0]["Price"].ToString());
+                }
+            }
+            return bookViewModel;
         }
 
        
