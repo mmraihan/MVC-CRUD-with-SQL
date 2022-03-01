@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using CRUDwithSQL.Data;
 using CRUDwithSQL.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace CRUDwithSQL.Controllers
 {
@@ -44,6 +46,18 @@ namespace CRUDwithSQL.Controllers
 
             if (ModelState.IsValid)
             {
+                using (SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DevConnection")))
+                {
+                    sqlConnection.Open();
+                    SqlCommand sqlCmd = new SqlCommand("BookAddOrEdit", sqlConnection);
+                    sqlCmd.CommandType = CommandType.StoredProcedure;
+
+                    sqlCmd.Parameters.AddWithValue("BookID", bookViewModel.BookID);
+                    sqlCmd.Parameters.AddWithValue("Title", bookViewModel.Title);
+                    sqlCmd.Parameters.AddWithValue("Author", bookViewModel.Author);
+                    sqlCmd.Parameters.AddWithValue("Price", bookViewModel.Price);
+                    sqlCmd.ExecuteNonQuery();
+                }
              
                 return RedirectToAction(nameof(Index));
             }
