@@ -80,16 +80,24 @@ namespace CRUDwithSQL.Controllers
         // GET: Book/Delete/5
         public IActionResult Delete(int? id)
         {
-           
-
-            return View();
+            BookViewModel bookViewModel = FetchBookById(id);
+            return View(bookViewModel);         
         }
 
         // POST: Book/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
-        {    
+        {
+            using (SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DevConnection")))
+            {
+                sqlConnection.Open();
+                SqlCommand sqlCmd = new SqlCommand("BookDeleteByID", sqlConnection);
+                sqlCmd.CommandType = CommandType.StoredProcedure;
+
+                sqlCmd.Parameters.AddWithValue("BookID", id);
+                sqlCmd.ExecuteNonQuery();
+            }
             return RedirectToAction(nameof(Index));
         }
 
