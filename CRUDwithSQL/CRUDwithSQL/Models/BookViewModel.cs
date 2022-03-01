@@ -10,8 +10,11 @@ namespace CRUDwithSQL.Models
     {
         [Key]
         public int BookID { get; set; }
+        [Required]
         public string Title { get; set; }
+        [Required]
         public string Author { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage ="Sould be greater than 1 or equal 1")]
         public int Price { get; set; }
     }
 }
