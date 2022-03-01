@@ -7,15 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CRUDwithSQL.Data;
 using CRUDwithSQL.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace CRUDwithSQL.Controllers
 {
     public class BookController : Controller
     {
-       
-        public BookController()
+        private readonly IConfiguration _configuration;
+
+        public BookController(IConfiguration configuration)
         {
-            
+            _configuration = configuration;
         }
 
         // GET: Book
