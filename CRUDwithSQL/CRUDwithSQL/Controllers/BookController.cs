@@ -25,7 +25,15 @@ namespace CRUDwithSQL.Controllers
         // GET: Book
         public IActionResult Index()
         {
-            return View();
+            DataTable dataTable = new DataTable();
+            using (SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DevConnection")))
+            {
+                sqlConnection.Open();
+                SqlDataAdapter sqlData = new SqlDataAdapter("BookViewAll", sqlConnection);
+                sqlData.SelectCommand.CommandType = CommandType.StoredProcedure;
+                sqlData.Fill(dataTable);
+            }
+            return View(dataTable);
         }
 
 
